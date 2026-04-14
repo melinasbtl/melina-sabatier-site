@@ -1,0 +1,368 @@
+/* ============================================================
+   MÉLINA SABATIER — PORTFOLIO  style.css
+   ============================================================ */
+
+/*
+  Archivo : Regular (400), Medium (500), Italic (400i)
+  Utilisé pour tout le site.
+  - Regular  → texte courant, UI, header, footer
+  - Medium   → balises <b> dans les descriptions
+  - Italic   → texte anglais (em)
+*/
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;1,400&display=swap');
+
+:root {
+  --font:      "Archivo", "Helvetica Neue", Helvetica, sans-serif;
+  --black: #000;
+  --white: #fff;
+  --grey:  #888;
+  --header-h: 36px;
+  --footer-h: 28px;
+  --ui:    18px;
+  --ui-sm: 16px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font);
+  font-weight: 400;
+  font-size: var(--ui);
+  line-height: 1.4;
+  overflow: hidden;
+}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+
+#header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  z-index: 200;
+  background: var(--white);
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+}
+
+.header-left  { flex: 0 0 200px; font-size: var(--ui); font-family: var(--font); font-weight: 400; }
+
+.header-nav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: var(--ui);
+  font-family: var(--font);
+  white-space: nowrap;
+}
+
+.nav-label { color: var(--black); }
+.nav-sep   { color: var(--grey); font-size: 9px; }
+
+.nav-filter {
+  cursor: pointer;
+  color: var(--grey);
+  border-bottom: 1px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+.nav-filter:hover  { color: var(--black); }
+.nav-filter.active { color: var(--black); border-bottom-color: var(--black); }
+
+.header-right {
+  flex: 0 0 200px;
+  text-align: right;
+  font-size: var(--ui);
+  font-family: var(--font);
+  font-weight: 400;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.header-right:hover { opacity: .5; }
+
+/* ── CONTACT OVERLAY ────────────────────────────────────── */
+
+#contact-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: #e8e8e8;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+}
+#contact-overlay.open { opacity: 1; pointer-events: all; }
+
+.overlay-topbar {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  border-bottom: none;
+  font-size: var(--ui);
+  font-family: var(--font);
+  flex-shrink: 0;
+}
+
+#overlay-close { cursor: pointer; transition: opacity .15s; }
+#overlay-close:hover { opacity: .5; }
+
+.overlay-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 80px;
+  max-width: 1100px;
+}
+
+.overlay-body p {
+  font-size: clamp(28px, 4vw, 52px);
+  font-family: var(--font);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--black);
+  margin-bottom: 1.4em;
+}
+
+.overlay-body a {
+  color: var(--black);
+  text-decoration: none;
+  border-bottom: none;
+  transition: opacity .15s;
+}
+.overlay-body a:hover { opacity: .5; }
+
+/* ── PROJECTS FEED ──────────────────────────────────────── */
+
+#projects-feed {
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0;
+  bottom: var(--footer-h);
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+#projects-feed::-webkit-scrollbar { display: none; }
+
+/* ── SINGLE PROJECT ─────────────────────────────────────── */
+
+.project {
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  overflow: hidden;
+}
+
+.project.hidden { display: none; }
+
+/* LEFT : image/vidéo */
+.project-image-wrap {
+  flex: 1 1 auto;
+  position: relative;
+  overflow: hidden;
+  background: var(--white);
+  cursor: pointer;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.project-image-wrap img {
+  display: block;
+  height: 100%;
+  width: auto;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity .4s ease;
+  user-select: none;
+  pointer-events: none;
+  position: absolute;
+  top: 0; left: 0;
+}
+.project-image-wrap img.active {
+  opacity: 1;
+  position: relative;
+}
+
+/* Vidéos dans carousel */
+.project-image-wrap video {
+  display: block;
+  height: 100%;
+  width: auto;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity .4s ease;
+  position: absolute;
+  top: 0; left: 0;
+  pointer-events: none;
+}
+/* Vidéo active (via JS) OU vidéo seule dans son wrap */
+.project-image-wrap video.active {
+  opacity: 1;
+  position: relative;
+  pointer-events: auto;
+}
+/* Fallback : si aucun .active présent, la vidéo est visible */
+.project-image-wrap:not(:has(img)):not(:has(video ~ video)) video {
+  opacity: 1;
+  position: relative;
+  pointer-events: auto;
+}
+
+/* RIGHT : panneau texte */
+.project-info {
+  flex: 0 0 280px;
+  width: 280px;
+  padding: 18px 16px;
+  border-left: none;
+  font-size: var(--ui);
+  font-family: var(--font);
+  font-weight: 400;
+  line-height: 1.55;
+  overflow-y: auto;
+  background: var(--white);
+}
+
+/* Texte FR — regular, taille principale */
+.project-info p {
+  margin-bottom: 10px;
+  color: var(--black);
+  font-size: 15px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.55;
+}
+
+/* Gras dans les descriptions → Medium (500) */
+.project-info p b,
+.project-info b {
+  font-weight: 500;
+}
+
+/* Texte EN — italic, gris, plus petit */
+.project-info p em {
+  font-family: var(--font);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--grey);
+  line-height: 1.5;
+  display: block;
+}
+
+/* Credits */
+.credits {
+  font-size: 11px !important;
+  color: var(--grey);
+  margin-top: 10px !important;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.lang { font-size: 9px; letter-spacing: .06em; color: var(--grey); margin-right: 4px; }
+
+/* META hidden */
+.project-meta { display: none; }
+
+/* ── BOTTOM BAR ─────────────────────────────────────────── */
+
+#bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--footer-h);
+  background: var(--white);
+  border-top: none;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  z-index: 200;
+  font-size: var(--ui-sm);
+  font-family: var(--font);
+  font-weight: 400;
+}
+
+#bottom-bar span { flex: 1; }
+#bar-date { text-align: right; flex: 0 0 120px; }
+
+/* ── LIENS CLIQUABLES ────────────────────────────────────── */
+.project-link {
+  color: var(--black);
+  text-decoration: none;
+  border-bottom: 1px solid var(--black);
+  font-size: inherit;
+  font-family: var(--font);
+  transition: opacity .15s;
+  display: inline-block;
+  margin-top: 4px;
+}
+.project-link:hover { opacity: .5; }
+
+
+
+/* ── PISTES AUDIO ────────────────────────────────────────── */
+.audio-list { margin: 10px 0; }
+.audio-label {
+  font-size: 11px;
+  color: var(--grey);
+  margin: 10px 0 3px;
+  font-family: var(--font);
+}
+.audio-list audio {
+  width: 100%;
+  height: 28px;
+  display: block;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  #projects-feed { scroll-snap-type: y proximity; }
+
+  .project {
+    flex-direction: column;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .project-image-wrap {
+    width: 100%;
+    height: 70vw;
+    flex: none;
+  }
+
+  .project-image-wrap img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  .project-image-wrap video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  .project-info {
+    flex: none;
+    width: 100%;
+    border-left: none;
+    border-top: none;
+  }
+
+  .overlay-body { padding: 40px 24px; }
+  .header-left, .header-right { flex: 0 0 auto; }
+  .header-nav { gap: 3px; font-size: 14px; }
+}
